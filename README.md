@@ -10,14 +10,16 @@ A systematic, 10-phase quality inspection workflow for academic LaTeX papers bef
 
 ### Supported Platforms
 
-| Platform | Installation | How It Works |
-|----------|-------------|--------------|
-| **Cursor** | Clone to `~/.cursor/skills/` | Auto-detected as Agent Skill |
-| **Claude Code** | Reference in `CLAUDE.md` | Loaded as project instructions |
-| **OpenAI Codex** | Reference in `AGENTS.md` | Loaded as agent instructions |
-| **GitHub Copilot** | Reference in `.github/copilot-instructions.md` | Loaded as custom instructions |
-| **Windsurf** | Clone to `~/.codeium/windsurf/skills/` | Auto-detected as Skill |
-| **Any LLM** | Copy SKILL.md content to system prompt | Direct instruction injection |
+All major AI coding platforms now support a **skill directory** structure — a folder with a `SKILL.md` file that the agent auto-detects and loads.
+
+| Platform | Personal Skills | Project Skills | Invocation |
+|----------|----------------|----------------|------------|
+| **Cursor** | `~/.cursor/skills/` | `.cursor/skills/` | Auto-detected; triggered by keywords |
+| **Claude Code** | `~/.claude/skills/` | `.claude/skills/` | Auto-detected; or `/paper-submission-check` |
+| **OpenAI Codex** | `~/.agents/skills/` | `.agents/skills/` | Auto-detected by Codex CLI/IDE/App |
+| **GitHub Copilot** | — | `.github/copilot-instructions.md` or `AGENTS.md` | Referenced as custom instructions |
+| **Windsurf** | Global rules (via UI) | `.windsurf/rules/` | Loaded as workspace rules |
+| **Any LLM** | — | — | Copy `SKILL.md` content to system prompt |
 
 ### What It Does
 
@@ -60,85 +62,97 @@ cd $env:USERPROFILE\.cursor\skills
 git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
-After cloning, restart Cursor. The skill will be auto-detected.
+Restart Cursor after cloning. The skill auto-activates when you mention "paper check", "submission", or "proofreading".
 
 #### Claude Code
 
-Clone the repo into your project, then reference it in your `CLAUDE.md`:
+Claude Code uses `~/.claude/skills/` (personal) and `.claude/skills/` (project) — the same folder + `SKILL.md` convention.
 
-```bash
-cd your-paper-project
-git clone https://github.com/zhousodo/paper-submission-check.git .claude/skills/paper-submission-check
-```
-
-Add to your project's `CLAUDE.md`:
-
-```markdown
-## Paper Quality Check
-
-When asked to review a paper, follow the workflow in
-.claude/skills/paper-submission-check/SKILL.md
-
-Reference databases:
-- AI phrase detection: .claude/skills/paper-submission-check/ai-phrases.md
-- Publisher checklists: .claude/skills/paper-submission-check/checklist.md
-```
-
-Or simply reference the files directly in conversation:
-
-```
-Read .claude/skills/paper-submission-check/SKILL.md and check my paper.tex
-```
-
-#### OpenAI Codex
-
-Clone the repo into your project, then reference it in your `AGENTS.md`:
-
-```bash
-cd your-paper-project
-git clone https://github.com/zhousodo/paper-submission-check.git .codex/paper-submission-check
-```
-
-Add to your project's `AGENTS.md`:
-
-```markdown
-## Paper Quality Check
-
-When reviewing LaTeX papers before submission, follow the 10-phase workflow in
-.codex/paper-submission-check/SKILL.md
-
-Additional references:
-- .codex/paper-submission-check/ai-phrases.md
-- .codex/paper-submission-check/checklist.md
-```
-
-#### GitHub Copilot
-
-Add to `.github/copilot-instructions.md`:
-
-```markdown
-## Paper Review Instructions
-
-When asked to check or review a LaTeX paper, follow the workflow described in:
-paper-submission-check/SKILL.md
-
-Use paper-submission-check/ai-phrases.md for AI-style detection
-and paper-submission-check/checklist.md for publisher-specific requirements.
-```
-
-#### Windsurf
+**Personal skill (all projects):**
 
 ```bash
 # macOS / Linux
-cd ~/.codeium/windsurf/skills
+cd ~/.claude/skills
 git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
 ```powershell
 # Windows
-cd $env:USERPROFILE\.codeium\windsurf\skills
+cd $env:USERPROFILE\.claude\skills
 git clone https://github.com/zhousodo/paper-submission-check.git
 ```
+
+**Project skill (one project):**
+
+```bash
+cd your-paper-project
+mkdir -p .claude/skills
+cd .claude/skills
+git clone https://github.com/zhousodo/paper-submission-check.git
+```
+
+After installation, invoke with `/paper-submission-check` or let Claude auto-detect it.
+
+#### OpenAI Codex
+
+Codex uses `~/.agents/skills/` (user-level) and `.agents/skills/` (repository-level) for skills.
+
+**User-level skill (all projects):**
+
+```bash
+# macOS / Linux
+cd ~/.agents/skills
+git clone https://github.com/zhousodo/paper-submission-check.git
+```
+
+```powershell
+# Windows
+cd $env:USERPROFILE\.agents\skills
+git clone https://github.com/zhousodo/paper-submission-check.git
+```
+
+**Repository-level skill (one project):**
+
+```bash
+cd your-paper-project
+mkdir -p .agents/skills
+cd .agents/skills
+git clone https://github.com/zhousodo/paper-submission-check.git
+```
+
+Works across Codex CLI, IDE extension, and Codex App.
+
+#### GitHub Copilot
+
+Copilot supports `AGENTS.md` for its coding agent. Add to your repository root's `AGENTS.md`:
+
+```markdown
+## Paper Quality Check
+
+When reviewing LaTeX papers before submission, follow the 10-phase workflow in:
+- .agents/skills/paper-submission-check/SKILL.md
+
+Reference databases:
+- AI phrase detection: .agents/skills/paper-submission-check/ai-phrases.md
+- Publisher checklists: .agents/skills/paper-submission-check/checklist.md
+```
+
+Copilot also reads `.github/copilot-instructions.md` and path-specific `.github/instructions/*.instructions.md` files.
+
+#### Windsurf
+
+Windsurf uses `.windsurf/rules/` for workspace-level rules.
+
+**Workspace rule:**
+
+```bash
+cd your-paper-project
+mkdir -p .windsurf/rules
+cd .windsurf/rules
+git clone https://github.com/zhousodo/paper-submission-check.git
+```
+
+You can also reference the skill content in `.windsurf/context.md` for session-wide context.
 
 #### Any Other LLM (ChatGPT, Gemini, etc.)
 
@@ -156,24 +170,20 @@ Based on the above instructions, check my paper: [paste LaTeX content]
 @SKILL.md Please check my paper @paper.tex and @refs.bib before submission.
 ```
 
-The agent auto-detects the skill when you mention "paper check", "proofreading", "submission preparation", or "quality review".
-
 #### Claude Code
 
 ```bash
-claude "Read paper-submission-check/SKILL.md, then check my paper.tex and my.bib for submission to Elsevier"
-```
+# CLI mode
+claude "Check my paper.tex and my.bib for submission to Elsevier"
 
-Or in interactive mode:
-
-```
-> Check paper.tex following the workflow in paper-submission-check/SKILL.md
+# Interactive mode — invoke the skill directly
+> /paper-submission-check
 ```
 
 #### OpenAI Codex
 
 ```bash
-codex "Review my paper.tex using the paper-submission-check workflow before I submit to IEEE"
+codex "Review my paper.tex using the paper-submission-check workflow"
 ```
 
 #### General Prompts (any platform)
@@ -245,14 +255,16 @@ MIT License - see [LICENSE](LICENSE)
 
 ### 支持的平台
 
-| 平台 | 安装方式 | 工作原理 |
-|------|---------|---------|
-| **Cursor** | 克隆到 `~/.cursor/skills/` | 自动识别为 Agent Skill |
-| **Claude Code** | 在 `CLAUDE.md` 中引用 | 作为项目指令加载 |
-| **OpenAI Codex** | 在 `AGENTS.md` 中引用 | 作为代理指令加载 |
-| **GitHub Copilot** | 在 `.github/copilot-instructions.md` 中引用 | 作为自定义指令加载 |
-| **Windsurf** | 克隆到 `~/.codeium/windsurf/skills/` | 自动识别为 Skill |
-| **其他 LLM** | 将 SKILL.md 内容复制到系统提示词 | 直接注入指令 |
+主流 AI 编程平台均已支持 **skill 目录** 结构 —— 一个包含 `SKILL.md` 文件的文件夹，代理会自动检测并加载。
+
+| 平台 | 个人 Skill 目录 | 项目 Skill 目录 | 调用方式 |
+|------|----------------|----------------|---------|
+| **Cursor** | `~/.cursor/skills/` | `.cursor/skills/` | 自动检测；关键词触发 |
+| **Claude Code** | `~/.claude/skills/` | `.claude/skills/` | 自动检测；或 `/paper-submission-check` |
+| **OpenAI Codex** | `~/.agents/skills/` | `.agents/skills/` | Codex CLI / IDE / App 自动检测 |
+| **GitHub Copilot** | — | `AGENTS.md` 或 `.github/copilot-instructions.md` | 作为自定义指令引用 |
+| **Windsurf** | 全局规则（通过 UI） | `.windsurf/rules/` | 作为工作区规则加载 |
+| **其他 LLM** | — | — | 将 `SKILL.md` 内容复制到系统提示词 |
 
 ### 功能说明
 
@@ -299,40 +311,86 @@ git clone https://github.com/zhousodo/paper-submission-check.git
 
 #### Claude Code
 
-将仓库克隆到项目中，然后在 `CLAUDE.md` 中引用：
+Claude Code 使用 `~/.claude/skills/`（个人）和 `.claude/skills/`（项目）—— 与 Cursor 相同的文件夹 + `SKILL.md` 约定。
+
+**个人 skill（所有项目可用）：**
+
+```powershell
+# Windows
+cd $env:USERPROFILE\.claude\skills
+git clone https://github.com/zhousodo/paper-submission-check.git
+```
+
+```bash
+# macOS / Linux
+cd ~/.claude/skills
+git clone https://github.com/zhousodo/paper-submission-check.git
+```
+
+**项目 skill（单个项目）：**
 
 ```bash
 cd 你的论文项目目录
-git clone https://github.com/zhousodo/paper-submission-check.git .claude/skills/paper-submission-check
+mkdir -p .claude/skills
+cd .claude/skills
+git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
-在 `CLAUDE.md` 中添加：
-
-```markdown
-## 论文质量检查
-
-当被要求审查论文时，遵循 .claude/skills/paper-submission-check/SKILL.md 中的工作流。
-参考数据库：
-- AI 短语检测：.claude/skills/paper-submission-check/ai-phrases.md
-- 出版商清单：.claude/skills/paper-submission-check/checklist.md
-```
+安装后，使用 `/paper-submission-check` 调用，或让 Claude 自动检测。
 
 #### OpenAI Codex
 
-克隆到项目中，在 `AGENTS.md` 中引用：
+Codex 使用 `~/.agents/skills/`（用户级）和 `.agents/skills/`（仓库级）存放 skill。
+
+**用户级 skill（所有项目可用）：**
+
+```powershell
+# Windows
+cd $env:USERPROFILE\.agents\skills
+git clone https://github.com/zhousodo/paper-submission-check.git
+```
+
+```bash
+# macOS / Linux
+cd ~/.agents/skills
+git clone https://github.com/zhousodo/paper-submission-check.git
+```
+
+**仓库级 skill（单个项目）：**
 
 ```bash
 cd 你的论文项目目录
-git clone https://github.com/zhousodo/paper-submission-check.git .codex/paper-submission-check
+mkdir -p .agents/skills
+cd .agents/skills
+git clone https://github.com/zhousodo/paper-submission-check.git
 ```
 
-在 `AGENTS.md` 中添加：
+适用于 Codex CLI、IDE 扩展和 Codex App。
+
+#### GitHub Copilot
+
+Copilot 编程代理支持 `AGENTS.md`。在仓库根目录的 `AGENTS.md` 中添加：
 
 ```markdown
 ## 论文质量检查
 
-审查 LaTeX 论文时，遵循 .codex/paper-submission-check/SKILL.md 中的 10 阶段工作流。
+审查 LaTeX 论文时，遵循 .agents/skills/paper-submission-check/SKILL.md 中的工作流。
 ```
+
+Copilot 也支持 `.github/copilot-instructions.md` 和路径级 `.github/instructions/*.instructions.md`。
+
+#### Windsurf
+
+Windsurf 使用 `.windsurf/rules/` 存放工作区规则。
+
+```bash
+cd 你的论文项目目录
+mkdir -p .windsurf/rules
+cd .windsurf/rules
+git clone https://github.com/zhousodo/paper-submission-check.git
+```
+
+也可在 `.windsurf/context.md` 中引用 skill 内容作为会话上下文。
 
 #### 其他 LLM（ChatGPT、Gemini 等）
 
@@ -350,18 +408,20 @@ git clone https://github.com/zhousodo/paper-submission-check.git .codex/paper-su
 @SKILL.md 请帮我检查论文 @paper.tex 和 @refs.bib，准备投稿。
 ```
 
-提到"论文检查"、"投稿准备"、"质量审查"等关键词时会自动触发。
-
 #### Claude Code
 
 ```bash
-claude "读取 paper-submission-check/SKILL.md，然后检查 paper.tex 和 my.bib，准备投稿到 Elsevier"
+# CLI 模式
+claude "检查 paper.tex 和 my.bib，准备投稿到 Elsevier"
+
+# 交互模式 — 直接调用 skill
+> /paper-submission-check
 ```
 
 #### OpenAI Codex
 
 ```bash
-codex "使用 paper-submission-check 工作流审查 paper.tex，准备投稿到 IEEE"
+codex "使用 paper-submission-check 工作流审查 paper.tex"
 ```
 
 ### 贡献
