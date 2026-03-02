@@ -29,7 +29,7 @@ This skill guides the AI agent through a 10-phase quality check of your LaTeX pa
 |-------|-------|---------|
 | 0 | **Pre-Check** | Detect citation style (numbered/author-year), template type, journal name |
 | 1 | **Pronoun & Subjectivity** | "we/our" overuse with quantitative thresholds, "our proposed" redundancy |
-| 2 | **AI-Style Detection** | 80+ AI-generated phrases across 5 tiers, structural AI patterns |
+| 2 | **AI-Style Detection & Removal** | 13 AI patterns with severity levels (S1-S4), 80+ phrases, em dash/focal word/-ing chain detection, rewriting strategies |
 | 3 | **Symbol & Punctuation** | Chinese/English punctuation mixing, dash errors, space issues |
 | 4 | **Capitalization** | Section title consistency, acronym definitions |
 | 5 | **LaTeX Issues** | Citation format (style-aware), `~` before `\cite`/`\ref`, redundant formatting |
@@ -204,11 +204,12 @@ Help me review @paper.tex for AI-generated style issues.
 
 ```
 paper-submission-check/
-├── SKILL.md          # Main skill instructions (10-phase workflow)
-├── ai-phrases.md     # Complete AI-generated phrase database (5 tiers, 80+ phrases)
-├── checklist.md      # Per-publisher requirements and regex search commands
-├── README.md         # This file
-└── LICENSE           # MIT License
+├── SKILL.md              # Main skill instructions (10-phase workflow)
+├── ai-phrases.md         # AI-generated phrase database (5 tiers, 80+ phrases)
+├── ai-style-removal.md   # AI style removal guide (13 patterns, severity levels, rewriting strategies)
+├── checklist.md          # Per-publisher requirements and regex search commands
+├── README.md             # This file
+└── LICENSE               # MIT License
 ```
 
 ### Output
@@ -274,7 +275,7 @@ MIT License - see [LICENSE](LICENSE)
 |------|--------|------|
 | 0 | **预检** | 检测引用风格（编号/作者-年份）、模板类型、期刊名称 |
 | 1 | **代词和主观性** | "we/our" 过度使用（含量化阈值）、"our proposed" 冗余检测 |
-| 2 | **AI 风格检测** | 5 个层级的 80+ AI 生成短语、结构性 AI 模式识别 |
+| 2 | **AI 风格检测与移除** | 13 种 AI 模式（S1-S4 严重度分级）、80+ 短语、破折号/焦点词/-ing 链检测、改写策略 |
 | 3 | **符号和标点** | 中英文标点混用、破折号错误、空格问题 |
 | 4 | **大小写一致性** | 章节标题风格统一、缩写定义检查 |
 | 5 | **LaTeX 问题** | 引用格式（区分编号/作者-年份）、`~` 不间断空格、重复格式化 |

@@ -1,6 +1,6 @@
 ---
 name: paper-submission-check
-description: Pre-submission quality check for academic papers in LaTeX. Detects first-person pronoun overuse, AI-generated writing style, symbol errors, dash misuse, capitalization inconsistencies, mixed Chinese/English punctuation, bracket errors, citation format issues, BIB file errors, and formatting problems. Supports Elsevier, IEEE, Springer, ACM templates. Use when reviewing papers before journal or conference submission, or when the user mentions paper checking, proofreading, submission preparation, or quality review.
+description: Pre-submission quality check for academic papers in LaTeX. Detects and removes AI-generated writing style (em dashes, focal words, -ing chains, negative parallelism, inflated significance), first-person pronoun overuse, symbol errors, capitalization inconsistencies, mixed Chinese/English punctuation, citation format issues, BIB file errors, and formatting problems. Supports Elsevier, IEEE, Springer, ACM templates. Use when reviewing papers before journal or conference submission, removing AI writing traces, or when the user mentions paper checking, proofreading, submission preparation, quality review, or AI style removal.
 ---
 
 # Paper Pre-Submission Quality Check
@@ -15,7 +15,7 @@ Track progress through all phases:
 Pre-Submission Check Progress:
 - [ ] Phase 0: Pre-Check (detect citation style, count authors, identify template)
 - [ ] Phase 1: Pronoun & Subjectivity Check (with quantitative thresholds)
-- [ ] Phase 2: AI-Generated Style Detection
+- [ ] Phase 2: AI-Generated Style Detection & Removal
 - [ ] Phase 3: Symbol & Punctuation Errors
 - [ ] Phase 4: Capitalization Consistency
 - [ ] Phase 5: LaTeX-Specific Issues (citation-style-aware)
@@ -106,65 +106,69 @@ our proposed algorithm → the proposed algorithm
 
 ---
 
-## Phase 2: AI-Generated Style Detection
+## Phase 2: AI-Generated Style Detection & Removal
 
-**This is critical.** Reviewers and editors increasingly detect AI-generated text. Search for these patterns.
+**This is the most critical phase.** Journal editors and reviewers increasingly detect AI-generated text. Major publishers (Elsevier, Springer Nature, IEEE) require disclosure of AI use, and undisclosed AI-generated text can lead to desk rejection or ethics investigation.
 
-### High-Confidence AI Markers (must fix)
+This phase has two parts: **Detection** (find AI patterns) and **Removal** (rewrite to sound human).
 
-```
-delve into / delve deeper / delves into
-it is worth noting that / it should be noted that
-it is important to note that / importantly
-in the realm of / in the landscape of
-a myriad of / a plethora of / a multitude of
-plays a crucial role / plays a pivotal role / plays a vital role
-has garnered significant attention
-pave the way for / paves the way
-offers a promising avenue
-the intricate .* nature of
-hold immense promise / holds great potential
-leverage the power of
-in the ever-evolving .* landscape
-in today's rapidly evolving
-stands as a testament to
-sheds light on / shed new light
-is poised to revolutionize
-is a game-changer / game-changing
-```
+### Step 2a: Detect AI Patterns by Severity
 
-### Medium-Confidence AI Markers (review and rephrase)
+Scan for patterns in order of severity (S1 = desk rejection risk, S2 = major revision risk):
 
-```
-furthermore .* moreover (both in same paragraph)
-not only .* but also (overuse: >2 per page)
-comprehensive .* (overuse: >3 in paper)
-novel .* approach (overuse: >2 in paper)
-cutting-edge / state-of-the-art (overuse: >5 in paper)
-notably / remarkably / significantly (overuse: >5 in paper)
-demonstrates? remarkable / exceptional / superior
-robust(ness)? .* across .* (scenarios|datasets|environments)
-underscores? (the|their|its) .* potential
-compelling .* (evidence|results|findings)
-testament to .* (effectiveness|robustness)
-effectively address(es|ing) .* challenges?
-paramount (importance)?
-```
+**S1 — Desk Rejection Risk (fix every instance):**
 
-### AI-Style Sentence Patterns
+| Pattern | What to Search | Threshold |
+|---------|---------------|-----------|
+| Em dash overuse | `—` or `---` | ≤3 total, 0 in abstract |
+| 21 focal words | `delve`, `tapestry`, `landscape` (figurative), `nuanced`, `multifaceted`, `intricate`, `meticulous`, `pivotal`, `underscore`, `commendable` | 0 instances |
+| Participial -ing chains | `, highlighting`, `, underscoring`, `, demonstrating`, `, showcasing`, `, reflecting`, `, contributing`, `, ensuring`, `, fostering` | ≤3 total |
+| Tier-1 AI phrases | `garnered attention`, `pave the way`, `testament to`, `realm of`, `myriad of`, `plethora of`, `poised to revolutionize` | 0 instances |
 
-| AI Pattern | Academic Alternative |
-|-----------|---------------------|
-| "The results demonstrate remarkable performance" | "The results show improved performance (XX% gain)" |
-| "This innovative approach effectively addresses" | "This approach reduces error by XX%" |
-| "Particularly compelling is the performance" | "On dataset X, method Y achieves Z AUC" |
-| "These findings strongly indicate significant potential" | "These results confirm that X outperforms Y by Z%" |
-| "the critical challenges inherent in contemporary" | "the key challenge of detecting X in Y" |
-| "validates the algorithmic innovation and underscores potential" | "confirms the effectiveness on N datasets" |
+**S2 — Major Revision Risk (fix all instances):**
 
-**Rule**: Replace vague superlatives with specific numbers. If you say "remarkable", back it with a number.
+| Pattern | What to Search | Threshold |
+|---------|---------------|-----------|
+| Negative parallelism | `not only...but also`, `not just...but`, `goes beyond...to` | ≤1 total |
+| Rule of Three | Three abstract adjectives joined by "and" (e.g., "accuracy, efficiency, and robustness") | Replace with data |
+| Inflated significance | `pivotal`, `crucial`, `vital`, `watershed`, `groundbreaking`, `transformative`, `paradigm shift` | Replace with specifics |
+| Vague attributions | `researchers have shown`, `studies indicate`, `experts argue`, `it is widely recognized` | Replace with citations |
+| Positivity bias | Missing limitations section, no failure cases discussed | Add honest limitations |
+
+**S3 — Minor Revision (fix most):**
+
+| Pattern | What to Search | Threshold |
+|---------|---------------|-----------|
+| Nominalizations | `utilization`, `implementation`, `optimization`, `facilitation` | Convert to verbs |
+| Conjunctive saturation | `Furthermore`, `Moreover`, `Additionally` starting consecutive paragraphs | ≤3 each total |
+| Formulaic transitions | "Having discussed X, we now turn to Y" | 0 instances |
+| Correlative conjunctions | `whether...or`, `both...and`, `neither...nor` | ≤2 total |
+| Hedge stacking | "could potentially suggest that it might" | ≤1 hedge per sentence |
+
+### Step 2b: Rewrite with Human Style
+
+Apply these golden rules when rewriting:
+
+1. **Specific beats impressive**: Replace every adjective with a number
+2. **Active beats nominal**: "X uses Y" not "the utilization of Y by X"
+3. **Short beats long**: If a sentence has >30 words, split it
+4. **Direct beats hedged**: "X improves Y" not "X could potentially improve Y"
+5. **Cited beats claimed**: "Smith et al. showed X" not "researchers have shown X"
+6. **Honest beats promotional**: Include real limitations, not vague future work
+7. **Varied beats formulaic**: Don't start every paragraph with "Furthermore"
+8. **Simple beats ornate**: "use" not "utilize", "show" not "underscore"
+
+### Quick Before/After Reference
+
+| AI-Generated | Human-Written |
+|-------------|---------------|
+| "This paper delves into the intricate challenges of anomaly detection" | "This paper addresses anomaly detection in streaming graphs" |
+| "The method — leveraging sketch structures — achieves remarkable performance across diverse datasets" | "The method uses sketch structures and achieves 0.998 AUC on CICIDS2019" |
+| "These findings not only validate the effectiveness but also underscore the potential, demonstrating superior adaptability" | "The method outperforms all baselines on three of four datasets (Table 3)" |
+| "Furthermore, the comprehensive evaluation demonstrates both efficiency and robustness" | "The method processes 1M edges in 12 seconds with constant memory" |
 
 For the complete AI phrase database, see [ai-phrases.md](ai-phrases.md).
+For the detailed AI style removal guide with 13 patterns and rewriting strategies, see [ai-style-removal.md](ai-style-removal.md).
 
 ---
 
@@ -574,4 +578,5 @@ After running all checks, produce a structured report:
 ## Additional Resources
 
 - For the complete AI-generated phrase database, see [ai-phrases.md](ai-phrases.md)
+- For the detailed AI style removal guide (13 patterns, severity levels, rewriting strategies), see [ai-style-removal.md](ai-style-removal.md)
 - For the detailed pre-submission checklist with per-publisher requirements, see [checklist.md](checklist.md)
