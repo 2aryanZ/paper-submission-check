@@ -35,7 +35,7 @@ This skill guides the AI agent through a 10-phase quality check of your LaTeX pa
 | 5 | **LaTeX Issues** | Citation format (style-aware), `~` before `\cite`/`\ref`, redundant formatting |
 | 6 | **Grammar & Language** | Contractions, comma splices, duplicate content, tense consistency |
 | 7 | **Tables, Figures & Numbers** | Number cross-reference verification, decimal precision |
-| 8 | **Content Structure** | Abstract quality, contribution check, terminology consistency |
+| 8 | **Content Structure & Completeness** | Abstract (PRKS), introduction (CARS model), paragraph/sentence length, keywords, section rules, limitations, conclusion ≠ abstract |
 | 9 | **BIB File Integrity** | Brace matching, nested entries, missing fields, cross-references |
 | 10 | **Final Checklist** | Per-publisher requirements (Elsevier, IEEE, Springer, ACM) |
 
@@ -204,12 +204,13 @@ Help me review @paper.tex for AI-generated style issues.
 
 ```
 paper-submission-check/
-├── SKILL.md              # Main skill instructions (10-phase workflow)
-├── ai-phrases.md         # AI-generated phrase database (5 tiers, 80+ phrases)
-├── ai-style-removal.md   # AI style removal guide (13 patterns, severity levels, rewriting strategies)
-├── checklist.md          # Per-publisher requirements and regex search commands
-├── README.md             # This file
-└── LICENSE               # MIT License
+├── SKILL.md                  # Main skill instructions (10-phase workflow)
+├── ai-phrases.md             # AI-generated phrase database (5 tiers, 80+ phrases)
+├── ai-style-removal.md       # AI style removal guide (13 patterns, severity levels, rewriting strategies)
+├── paper-structure-guide.md  # Paper structure & writing quality guide (abstract, CARS, paragraphs, keywords, sections)
+├── checklist.md              # Per-publisher requirements and regex search commands
+├── README.md                 # This file
+└── LICENSE                   # MIT License
 ```
 
 ### Output
@@ -281,7 +282,7 @@ MIT License - see [LICENSE](LICENSE)
 | 5 | **LaTeX 问题** | 引用格式（区分编号/作者-年份）、`~` 不间断空格、重复格式化 |
 | 6 | **语法和语言** | 缩写词、逗号拼接、重复内容、时态一致性 |
 | 7 | **表格、图表和数字** | 正文与表格数字交叉验证、小数精度一致 |
-| 8 | **内容结构** | 摘要质量、贡献检查、术语一致性 |
+| 8 | **内容结构与完整性** | 摘要（PRKS）、引言（CARS 模型）、段落/句子长度、关键词、各节规范、局限性、结论≠摘要 |
 | 9 | **BIB 文件完整性** | 花括号配对、条目嵌套、缺失字段、交叉引用 |
 | 10 | **最终清单** | 各出版商特定要求（Elsevier、IEEE、Springer、ACM） |
 

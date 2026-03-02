@@ -21,7 +21,7 @@ Pre-Submission Check Progress:
 - [ ] Phase 5: LaTeX-Specific Issues (citation-style-aware)
 - [ ] Phase 6: Grammar & Language Quality
 - [ ] Phase 7: Tables, Figures & Numbers (with cross-reference verification)
-- [ ] Phase 8: Content Structure & Completeness
+- [ ] Phase 8: Content Structure & Completeness (abstract/introduction/paragraph/keywords/sections)
 - [ ] Phase 9: BIB File Integrity Check
 - [ ] Phase 10: Final Pre-Submission Checklist
 ```
@@ -439,22 +439,54 @@ A comma splice is two independent clauses joined only by a comma. Search for pat
 
 ## Phase 8: Content Structure & Completeness
 
-### Abstract Check
+### 8a. Abstract Quality
 
-- [ ] Length: 150--300 words (check journal requirements)
-- [ ] Contains: problem, approach, key results with numbers, significance
+- [ ] Word count within journal limit (Elsevier: 150–300, IEEE: ≤200)
+- [ ] Follows PRKS structure: Problem → Response → Key Results → Significance
+- [ ] Problem section is ≤20% (not half the abstract)
+- [ ] Contains specific numbers (AUC, improvement percentages, dataset names)
 - [ ] No citations in abstract
 - [ ] No undefined abbreviations (define in abstract even if defined in body)
-- [ ] First sentence is NOT a generic statement ("With the rapid development of...")
+- [ ] First sentence is NOT generic ("With the rapid development of...")
 - [ ] Numbers in abstract match numbers in results tables
 
-### Contribution Check
+### 8b. Introduction Structure (CARS Model)
 
-- [ ] Contributions are specific and measurable
-- [ ] Each contribution maps to a section in the paper
-- [ ] Number of contributions: 3--5 (not too many)
+Verify the introduction follows the three-move structure:
 
-### Terminology Consistency
+- [ ] **Move 1 (Establish Territory)**: Field importance + key citations (1–2 paragraphs)
+- [ ] **Move 2 (Establish Niche)**: Specific gap/limitation identified (1 paragraph)
+- [ ] **Move 3 (Occupy Niche)**: "This paper proposes..." + contributions list + outline (1–2 paragraphs)
+- [ ] Move 2 → Move 3 transition is natural (gap directly motivates the proposed method)
+- [ ] Contributions: 3–5 numbered items, each specific and measurable
+- [ ] Paper outline paragraph references all sections with `\ref{}`
+
+### 8c. Paragraph & Sentence Structure
+
+- [ ] No paragraphs >250 words (flag and suggest splitting)
+- [ ] No single-sentence paragraphs (flag and suggest merging/expanding)
+- [ ] Conclusion is multi-paragraph (not one giant block)
+- [ ] No sentences >35 words (flag and suggest splitting)
+- [ ] Sentence length varies naturally (not all the same length)
+
+### 8d. Keywords
+
+- [ ] Count: 4–6 (Elsevier) or 3–10 (IEEE)
+- [ ] At least 1–2 keywords NOT from the title (for discoverability)
+- [ ] Mix of broad (field) + specific (method/technique) terms
+- [ ] No redundant keywords
+- [ ] Standard terms used (not invented phrases)
+
+### 8e. Section-Specific Structure
+
+- [ ] **Related Work**: Organized thematically + ends with gap summary
+- [ ] **Method**: All symbols defined + algorithm/pseudocode included
+- [ ] **Experiments**: Baselines use published defaults (stated explicitly) + runs averaged
+- [ ] **Discussion**: Includes result interpretation, not just number repetition
+- [ ] **Limitations**: Present (in Discussion or Conclusion) — specific, not vague
+- [ ] **Conclusion ≠ Abstract**: Conclusion synthesizes, not just summarizes
+
+### 8f. Terminology Consistency
 
 Pick one term and use throughout:
 
@@ -465,11 +497,21 @@ Pick one term and use throughout:
 | "dataset" / "data set" / "benchmark" | Be consistent |
 | "TON_IoT" / "TON-IoT" / "TON\_IoT" | Match the original paper's name with `\_` in LaTeX |
 
+### 8g. Cross-Section Consistency
+
+- [ ] Abstract numbers = Table numbers
+- [ ] Each numbered contribution maps to a specific section
+- [ ] Introduction gap = Method solution
+- [ ] Method symbols = Experiment parameters
+- [ ] Conclusion claims ⊆ Results data
+
 ### Self-Citation Anonymization (for blind review)
 
 - No author names in text if double-blind
 - Replace "In our previous work [X]" with "In prior work [X]"
 - Check PDF metadata (author field)
+
+For the detailed structure and writing guide (CARS model, paragraph standards, keywords strategy, section rules), see [paper-structure-guide.md](paper-structure-guide.md).
 
 ---
 
@@ -579,4 +621,5 @@ After running all checks, produce a structured report:
 
 - For the complete AI-generated phrase database, see [ai-phrases.md](ai-phrases.md)
 - For the detailed AI style removal guide (13 patterns, severity levels, rewriting strategies), see [ai-style-removal.md](ai-style-removal.md)
+- For the paper structure and writing quality guide (CARS model, paragraph/sentence standards, keywords, section rules), see [paper-structure-guide.md](paper-structure-guide.md)
 - For the detailed pre-submission checklist with per-publisher requirements, see [checklist.md](checklist.md)

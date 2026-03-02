@@ -169,6 +169,42 @@ rg '\d{4,}(?![\d,])' paper.tex      # Large numbers without thousands separator
 rg '0\.\d+' paper.tex               # Decimal numbers (check precision consistency)
 ```
 
+### Phase 8: Content Structure
+
+```bash
+# Abstract
+rg -c '\w+' paper.tex                # Approximate word count (refine by extracting abstract block)
+rg '\\begin\{abstract\}' paper.tex   # Locate abstract
+rg '\\cite' paper.tex | head         # Check if citations appear in abstract (should not)
+
+# Introduction structure (CARS model)
+rg '\\section\{Introduction' paper.tex    # Locate introduction
+rg '\\begin\{enumerate\}' paper.tex       # Locate contributions list
+rg 'remainder of this paper' paper.tex    # Locate paper outline paragraph
+
+# Keywords
+rg '\\begin\{keyword\}' paper.tex    # Locate keywords block
+rg '\\sep' paper.tex                 # Count keyword separators (count+1 = number of keywords)
+
+# Paragraph length (detect giant paragraphs >250 words)
+# Manual check: look for text blocks without blank lines that span many lines
+
+# Sentence length (detect >35 word sentences)
+# Manual check: look for sentences spanning 3+ lines without period
+
+# Conclusion structure
+rg '\\section\{Conclusion' paper.tex  # Locate conclusion
+# Check if conclusion is single paragraph (no blank lines between \section{Conclusion} and next \section or \end)
+
+# Limitations
+rg -in 'limitation' paper.tex        # Check if limitations are discussed
+rg -in 'future work' paper.tex       # Check future work mentions
+
+# Cross-section consistency
+rg '\\label\{' paper.tex             # List all labels
+rg '\\ref\{' paper.tex               # List all references (every label should be referenced)
+```
+
 ### Phase 9: BIB File
 
 ```bash
@@ -213,3 +249,12 @@ Based on analysis of actual submissions, these are the most frequently occurring
 18. **Missing articles** — "in network environment" → "in the network environment"
 19. **Excessive "we/our"** — especially "our" which can usually be replaced with "the"
 20. **AUC or other acronyms undefined in abstract** — abstract must be self-contained
+21. **Abstract problem section too long** — >50% of abstract is background, not enough on results
+22. **Introduction missing CARS Move 2** — no clear gap statement between background and proposal
+23. **Conclusion is one giant paragraph** — should be 2–4 paragraphs for papers >6 pages
+24. **Missing limitations** — no Limitations subsection in Discussion or Conclusion
+25. **Keywords only from title** — all keywords already appear in title, no additional discoverability
+26. **Conclusion ≈ Abstract repetition** — conclusion just restates abstract in different words
+27. **Sentences >35 words** — comprehension drops, reviewers flag readability
+28. **Paragraphs >250 words** — wall of text, should be split
+29. **Related Work ends without gap summary** — no synthesis linking to proposed method
