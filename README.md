@@ -6,7 +6,7 @@
 
 ## English
 
-A systematic, 10-phase quality inspection workflow for academic LaTeX papers before journal/conference submission. Works with **Cursor, Claude Code, OpenAI Codex, GitHub Copilot, Windsurf**, and any AI coding assistant that reads markdown instructions.
+A systematic, 11-phase (Phase 0-10) quality inspection workflow for academic LaTeX papers before journal/conference submission. Works with **Cursor, Claude Code, OpenAI Codex, GitHub Copilot, Windsurf**, and any AI coding assistant that reads markdown instructions.
 
 ### Supported Platforms
 
@@ -23,7 +23,7 @@ All major AI coding platforms now support a **skill directory** structure — a 
 
 ### What It Does
 
-This skill guides the AI agent through a 10-phase quality check of your LaTeX paper:
+This skill guides the AI agent through an 11-phase (Phase 0-10) quality check of your LaTeX paper:
 
 | Phase | Check | Examples |
 |-------|-------|---------|
@@ -129,7 +129,7 @@ Copilot supports `AGENTS.md` for its coding agent. Add to your repository root's
 ```markdown
 ## Paper Quality Check
 
-When reviewing LaTeX papers before submission, follow the 10-phase workflow in:
+When reviewing LaTeX papers before submission, follow the 11-phase (Phase 0-10) workflow in:
 - .agents/skills/paper-submission-check/SKILL.md
 
 Reference databases:
@@ -204,7 +204,7 @@ Help me review @paper.tex for AI-generated style issues.
 
 ```
 paper-submission-check/
-├── SKILL.md                  # Main skill instructions (10-phase workflow)
+├── SKILL.md                  # Main skill instructions (11-phase, Phase 0-10 workflow)
 ├── ai-phrases.md             # AI-generated phrase database (5 tiers, 80+ phrases)
 ├── ai-style-removal.md       # AI style removal guide (13 patterns, severity levels, rewriting strategies)
 ├── paper-structure-guide.md  # Paper structure & writing quality guide (abstract, CARS, paragraphs, keywords, sections)
@@ -253,7 +253,7 @@ MIT License - see [LICENSE](LICENSE)
 
 ## 中文
 
-一个系统化的 10 阶段学术 LaTeX 论文投稿前质量检查工作流。支持 **Cursor、Claude Code、OpenAI Codex、GitHub Copilot、Windsurf** 及所有能读取 Markdown 指令的 AI 编程助手。
+一个系统化的 11 阶段（Phase 0-10）学术 LaTeX 论文投稿前质量检查工作流。支持 **Cursor、Claude Code、OpenAI Codex、GitHub Copilot、Windsurf** 及所有能读取 Markdown 指令的 AI 编程助手。
 
 ### 支持的平台
 
@@ -270,7 +270,7 @@ MIT License - see [LICENSE](LICENSE)
 
 ### 功能说明
 
-此 skill 引导 AI 代理对 LaTeX 论文进行 10 阶段质量检查：
+此 skill 引导 AI 代理对 LaTeX 论文进行 11 阶段（Phase 0-10）质量检查：
 
 | 阶段 | 检查项 | 说明 |
 |------|--------|------|

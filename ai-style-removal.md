@@ -325,10 +325,10 @@ When removing AI style from a paper, follow this order:
 14. Eliminate false ranges and hedge stacking
 
 ### Step 4: Final humanization pass
-14. Read each paragraph aloud — does it sound like a human expert wrote it?
-15. Verify: every claim has a number or citation backing it
-16. Verify: the Limitations section is honest and specific
-17. Verify: the abstract starts with a specific problem, not a generic statement
+15. Read each paragraph aloud — does it sound like a human expert wrote it?
+16. Verify: every claim has a number or citation backing it
+17. Verify: the Limitations section is honest and specific
+18. Verify: the abstract starts with a specific problem, not a generic statement
 
 ---
 

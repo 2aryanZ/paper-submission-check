@@ -123,7 +123,7 @@ rg -in 'promising avenue' paper.tex
 
 ```bash
 rg '[\uff08\uff09\uff0c\u3002\uff1b\uff1a\u201c\u201d\u2018\u2019\u3001]' paper.tex  # Chinese punctuation
-rg '(?<!\-)\-\-(?!\-)' paper.tex   # En-dashes (verify each is a number range)
+rg '(^|[^-])--([^-]|$)' paper.tex   # En-dashes (verify each is a number range)
 rg '\.\w' paper.tex                 # Missing space after period
 rg '  +' paper.tex                  # Double spaces
 rg ' [,\.\;\:]' paper.tex          # Space before punctuation
@@ -141,8 +141,8 @@ rg '\\subsubsection\{' paper.tex    # List all subsubsection titles
 ### Phase 5: LaTeX
 
 ```bash
-rg '(?<!~)\\cite\{' paper.tex       # Missing ~ before \cite
-rg '(?<!~)\\ref\{' paper.tex        # Missing ~ before \ref
+rg '\\cite\{' paper.tex | rg -v '~\\cite\{'   # Missing ~ before \cite
+rg '\\ref\{' paper.tex | rg -v '~\\ref\{'     # Missing ~ before \ref
 rg '\\textbf\{\\textbf' paper.tex   # Double \textbf
 rg '\\textit\{\\textit' paper.tex   # Double \textit
 rg '^\\cite\{' paper.tex            # Sentence starting with bare \cite
@@ -165,7 +165,7 @@ rg -in ', When|, This is|, It is|, The ' paper.tex   # Potential comma splices
 ### Phase 7: Numbers
 
 ```bash
-rg '\d{4,}(?![\d,])' paper.tex      # Large numbers without thousands separator
+rg '\b[0-9]{4,}\b' paper.tex        # Large numbers without thousands separator (review years/IDs manually)
 rg '0\.\d+' paper.tex               # Decimal numbers (check precision consistency)
 ```
 
@@ -192,7 +192,7 @@ rg '\\subsection\{' paper.tex         # Check thematic organization (subsections
 rg -in 'gap|limitation|however|lack' paper.tex  # Check for gap summary at end
 
 # ── Method / Algorithm ──
-rg '\\section\{.*[Mm]ethod\|\\section\{.*[Aa]lgorithm\|\\section\{.*[Pp]roposed' paper.tex
+rg '\\section\{.*([Mm]ethod|[Aa]lgorithm|[Pp]roposed)' paper.tex
 rg '\\begin\{algorithm\}' paper.tex   # Locate pseudocode blocks
 rg '\\begin\{definition\}' paper.tex  # Locate formal definitions
 rg -in 'definition \d' paper.tex      # Check definition numbering
@@ -201,7 +201,7 @@ rg -in 'time complexity|space complexity' paper.tex  # Check complexity analysis
 
 # ── Experiments ──
 rg '\\section\{[Ee]xperiment' paper.tex   # Locate experiments
-rg -in 'default.*parameter\|published.*setting\|original.*parameter' paper.tex  # Fair comparison statement
+rg -in 'default.*parameter|published.*setting|original.*parameter' paper.tex  # Fair comparison statement
 rg -in 'averaged over|mean of|across.*runs' paper.tex  # Multiple runs statement
 rg -in 'ablation' paper.tex               # Check ablation study presence
 rg -in 'sensitivity|parameter.*analysis' paper.tex  # Parameter sensitivity
@@ -210,18 +210,18 @@ rg -in 'reproduce|reproducib' paper.tex   # Reproducibility statement
 
 # ── Discussion ──
 rg '\\section\{[Dd]iscussion' paper.tex   # Locate discussion
-rg -in 'outperforms because\|reason.*is\|explains\|due to\|attributed to' paper.tex  # Mechanism explanation
-rg -in 'prior work\|previous.*study\|compared (with|to).*existing' paper.tex  # Comparison with prior work
+rg -in 'outperforms because|reason.*is|explains|due to|attributed to' paper.tex  # Mechanism explanation
+rg -in 'prior work|previous.*study|compared (with|to).*existing' paper.tex  # Comparison with prior work
 
 # ── Limitations ──
 rg -in 'limitation' paper.tex        # Check if limitations are discussed
 rg -in 'future work' paper.tex       # Check future work mentions
-rg -in 'however.*only.*dataset\|limited to\|not.*tested\|unverified' paper.tex  # Specific limitations
+rg -in 'however.*only.*dataset|limited to|not.*tested|unverified' paper.tex  # Specific limitations
 
 # ── Conclusion ──
 rg '\\section\{[Cc]onclusion' paper.tex  # Locate conclusion
-rg -in 'paving the way\|paves the way\|future advancements' paper.tex  # Vague future work
-rg -in 'transform\|revolution\|groundbreak\|paradigm' paper.tex  # Overclaiming
+rg -in 'paving the way|paves the way|future advancements' paper.tex  # Vague future work
+rg -in 'transform|revolution|groundbreak|paradigm' paper.tex  # Overclaiming
 
 # ── Keywords ──
 rg '\\begin\{keyword\}' paper.tex    # Locate keywords block
