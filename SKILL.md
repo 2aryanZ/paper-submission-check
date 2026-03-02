@@ -1,6 +1,6 @@
 ---
 name: paper-submission-check
-description: Pre-submission quality check for academic papers in LaTeX. Detects and removes AI-generated writing style (em dashes, focal words, -ing chains, negative parallelism, inflated significance), first-person pronoun overuse, symbol errors, capitalization inconsistencies, mixed Chinese/English punctuation, citation format issues, BIB file errors, and formatting problems. Supports Elsevier, IEEE, Springer, ACM templates. Use when reviewing papers before journal or conference submission, removing AI writing traces, or when the user mentions paper checking, proofreading, submission preparation, quality review, or AI style removal.
+description: Pre-submission quality check for academic papers in LaTeX. Detects and removes AI-generated writing style (em dashes, focal words, -ing chains, negative parallelism, inflated significance), first-person pronoun overuse, symbol errors, capitalization inconsistencies, mixed Chinese/English punctuation, citation format issues, BIB file structural and formatting errors (entry types, title capitalization protection, journal name abbreviation consistency, DOI policies, author name formatting), and content structure problems. Supports Elsevier, IEEE, Springer, ACM templates. Use when reviewing papers before journal or conference submission, removing AI writing traces, checking reference formatting, or when the user mentions paper checking, proofreading, submission preparation, quality review, or AI style removal.
 ---
 
 # Paper Pre-Submission Quality Check
@@ -22,7 +22,7 @@ Pre-Submission Check Progress:
 - [ ] Phase 6: Grammar & Language Quality
 - [ ] Phase 7: Tables, Figures & Numbers (with cross-reference verification)
 - [ ] Phase 8: Content Structure & Completeness (abstract/introduction/paragraph/keywords/sections)
-- [ ] Phase 9: BIB File Integrity Check
+- [ ] Phase 9: BIB File & Reference Format Check
 - [ ] Phase 10: Final Pre-Submission Checklist
 ```
 
@@ -515,34 +515,107 @@ For the detailed structure and writing guide (CARS model, paragraph standards, k
 
 ---
 
-## Phase 9: BIB File Integrity Check
+## Phase 9: BIB File & Reference Format Check
 
-**This phase was added based on real-world errors found in submissions.**
+**The reference list is where reviewers frequently find careless errors. Studies show manuscripts with citation errors face 40% higher rejection rates.**
 
-### Structural Integrity
+### 9a. Structural Integrity
 
 Check every BIB entry for:
 
 1. **Matching braces**: Every `@type{key,` must have a closing `}`
 2. **No nested entries**: One entry must be fully closed before the next begins
-3. **Required fields present**: Check `title`, `author`, `year` at minimum
+3. **Required fields present**: `title`, `author`, `year` at minimum
 4. **No trailing comma after last field** (some BibTeX implementations fail)
 
-### Common BIB Errors
+### 9b. Entry Type Correctness
 
-| Error | Description |
-|-------|-------------|
-| Missing closing `}` | An entry's `}` is missing, causing the next entry to nest inside |
-| Duplicate keys | Two entries with the same citation key |
-| Unused entries | Entries in .bib that are never `\cite{}`d (not an error, but cleanup) |
-| Missing fields | Conference papers without `booktitle`, articles without `journal` |
-| Encoding issues | Non-ASCII characters in fields (use `{\"o}` not `ö`) |
+Verify each entry uses the correct `@type` — Google Scholar and digital libraries frequently assign wrong types:
 
-### Cross-Reference Check
+| Check | Action |
+|-------|--------|
+| Conference paper as `@article` | Change to `@inproceedings`, add `booktitle` |
+| arXiv preprint as `@inproceedings` | Change to `@misc` with `eprint` field |
+| Book chapter as `@inbook` | Verify: `@incollection` if different author from book |
+| Entry has `booktitle` but is `@article` | Change to `@inproceedings` |
+| Entry has `journal` but is `@inproceedings` | Change to `@article` |
 
-- Every `\cite{key}` in .tex has a matching entry in .bib
-- No "Citation undefined" warnings
-- Author names in text match BIB entries (e.g., if you write "Lo et al.", verify the BIB has `Lo` as first author)
+### 9c. Author Name Format
+
+| Check | Correct | Wrong |
+|-------|---------|-------|
+| Spaces between initials | `J. D. Owens` | `J.D. Owens` (BibTeX treats as single first name) |
+| Hyphenated names braced | `Wu-{chun} Feng` | `Wu-chun Feng` (may split incorrectly) |
+| Special characters escaped | `M{\"u}ller` | `Müller` (encoding error risk) |
+| Names match published paper | Use what's printed on the paper | Don't normalize or abbreviate arbitrarily |
+
+### 9d. Title Capitalization Protection
+
+**CRITICAL**: Protect proper nouns, acronyms, method names, and dataset names with individual `{}` braces. NEVER double-brace the entire title.
+
+| Must Protect | Examples | BibTeX Syntax |
+|-------------|---------|---------------|
+| **Acronyms** | GPU, CNN, LSTM, IoT, CMS | `{GPU}`, `{CNN}`, `{LSTM}`, `{IoT}`, `{CMS}` |
+| **Method/Model names** | BERT, ResNet, MIDAS, SBEAD, Adam | `{BERT}`, `{ResNet}`, `{MIDAS}`, `{SBEAD}` |
+| **Dataset names** | ImageNet, CICIDS2017, DARPA, TON\_IoT | `{ImageNet}`, `{CICIDS2017}`, `{DARPA}` |
+| **Proper nouns** | Gaussian, Bayesian, Markov, Fourier | `{G}aussian`, `{B}ayesian`, `{M}arkov` |
+| **Tool names** | TensorFlow, PyTorch, Spark, Hadoop | `{TensorFlow}`, `{PyTorch}` |
+
+```
+% WRONG — entire title double-braced (prevents ALL case conversion)
+title = {{Efficient GPU Computing Using CUDA for Deep Learning}}
+
+% WRONG — acronyms not protected (may become lowercase)
+title = {Efficient GPU computing using CUDA for deep learning}
+
+% CORRECT — individual protection
+title = {Efficient {GPU} Computing Using {CUDA} for Deep Learning}
+```
+
+### 9e. Journal Name Consistency (Publisher-Dependent)
+
+| Publisher | Rule | Example |
+|-----------|------|---------|
+| **IEEE** | **Must abbreviate** per ISO 4 | `IEEE Trans. Knowl. Data Eng.` (NOT full name) |
+| **Elsevier** | **Full name** | `Information Processing & Management` (NOT abbreviated) |
+| **ACM** | **Full name** | `ACM Computing Surveys` (NOT abbreviated) |
+| **Springer** | Check specific journal | Varies |
+
+**Consistency rule**: ALL journal names in one bibliography must follow the SAME convention (all abbreviated OR all full). Never mix.
+
+### 9f. Page Numbers, DOI, and Month
+
+| Field | Correct | Wrong |
+|-------|---------|-------|
+| Pages | `pages = {35--49}` (en-dash) | `pages = {35-49}` (hyphen) |
+| DOI | `doi = {10.1145/1234567}` (numbers only) | `doi = {https://doi.org/10.1145/1234567}` (full URL) |
+| DOI + URL | Keep `doi` only, remove redundant `url` | Both `doi` and `url` pointing to same DOI |
+| Month | `month = jun` (BibTeX macro, no quotes) | `month = {june}` or `month = {June}` |
+
+**DOI display note**: `elsarticle-num.bst` does NOT render the `doi` field in output. Include it in .bib for your records, but it will not appear in the compiled PDF. ACM `acmart` REQUIRES DOI and does display it.
+
+### 9g. Cross-Reference Check
+
+- [ ] Every `\cite{key}` in .tex has a matching entry in .bib
+- [ ] No "Citation undefined" warnings
+- [ ] No duplicate citation keys in .bib
+- [ ] Author names in text match BIB first author (e.g., "Lo et al." → BIB has `Lo` as first author)
+- [ ] In-text `\cite{}` uses `~` non-breaking space before it
+- [ ] Grouped citations sorted numerically: `\cite{a,b,c}` renders as [6, 8, 10] not [8, 6, 10]
+- [ ] Digital library exports manually verified and corrected
+
+### 9h. Digital Library Export Verification
+
+**NEVER trust auto-generated BibTeX** from Google Scholar, IEEE Xplore, ACM DL, or DBLP:
+
+| Source | Common Errors |
+|--------|-------------|
+| **Google Scholar** | Wrong entry type (conference → `@article`), missing fields, wrong capitalization |
+| **IEEE Xplore** | Scrambled venue names, no spaces between initials, month as string, page format wrong |
+| **ACM DL** | Title case wrong, DOI as full URL, redundant metadata fields |
+| **DBLP** | Generally better, but still verify capitalization and entry type |
+
+For the complete reference format guide with examples, see [reference-format-guide.md](reference-format-guide.md).
 
 ---
 
@@ -622,4 +695,5 @@ After running all checks, produce a structured report:
 - For the complete AI-generated phrase database, see [ai-phrases.md](ai-phrases.md)
 - For the detailed AI style removal guide (13 patterns, severity levels, rewriting strategies), see [ai-style-removal.md](ai-style-removal.md)
 - For the paper structure and writing quality guide (CARS model, paragraph/sentence standards, keywords, section rules), see [paper-structure-guide.md](paper-structure-guide.md)
+- For the reference format and bibliography quality guide (entry types, title protection, journal abbreviations, DOI policies), see [reference-format-guide.md](reference-format-guide.md)
 - For the detailed pre-submission checklist with per-publisher requirements, see [checklist.md](checklist.md)

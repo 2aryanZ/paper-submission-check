@@ -232,11 +232,60 @@ rg '\\label\{' paper.tex             # List all labels
 rg '\\ref\{' paper.tex               # List all references (every label should be referenced)
 ```
 
-### Phase 9: BIB File
+### Phase 9: BIB File & Reference Format
 
 ```bash
+# ── Structural Integrity ──
 rg '@\w+\{' paper.bib               # List all entry types and keys
 rg '^\}' paper.bib                   # Count closing braces (should match entry count)
+rg -c '@\w+\{' paper.bib            # Total entry count
+rg -c '^\}' paper.bib               # Total closing braces (should equal entry count)
+
+# ── Entry Type Verification ──
+rg '@article\{' paper.bib           # List all @article entries
+rg '@inproceedings\{' paper.bib     # List all @inproceedings entries
+rg '@misc\{' paper.bib              # List all @misc entries (arXiv, websites)
+rg 'booktitle.*=.*' paper.bib       # Entries with booktitle (should be @inproceedings, not @article)
+rg 'journal.*=.*' paper.bib         # Entries with journal (should be @article, not @inproceedings)
+rg -in 'arxiv' paper.bib            # arXiv entries (should be @misc, not @inproceedings)
+
+# ── Author Name Format ──
+rg '[A-Z]\.[A-Z]\.' paper.bib       # Initials without space (J.D. should be J. D.)
+rg -in 'ü|ö|ä|é|è|ñ|ç|å' paper.bib # Non-ASCII characters (should use LaTeX escapes)
+
+# ── Title Capitalization Protection ──
+rg 'title\s*=\s*\{\{' paper.bib     # Double-braced titles (ANTI-PATTERN — must fix)
+rg -in 'title.*GPU|title.*CNN|title.*LSTM|title.*IoT|title.*BERT|title.*GAN' paper.bib  # Check if acronyms protected
+rg -in 'title.*ImageNet|title.*CIFAR|title.*MNIST|title.*CICIDS' paper.bib  # Check dataset names
+rg -in 'title.*TensorFlow|title.*PyTorch|title.*Kubernetes' paper.bib  # Check tool names
+
+# ── Journal Name Consistency ──
+rg 'journal\s*=\s*' paper.bib       # List all journal names — check if ALL abbreviated or ALL full
+rg 'journal.*Trans\.' paper.bib     # Abbreviated journal names (IEEE style)
+rg 'journal.*Transactions' paper.bib # Full journal names — should not coexist with abbreviated
+
+# ── Conference Name (booktitle) ──
+rg 'booktitle\s*=\s*' paper.bib     # List all conference names — verify formatting
+
+# ── Page Numbers ──
+rg 'pages\s*=\s*\{[0-9]+-[0-9]+\}' paper.bib   # Single hyphen in page range (WRONG — should be --)
+rg 'pages\s*=\s*\{[0-9]+--[0-9]+\}' paper.bib  # Correct en-dash format
+rg 'pages\s*=\s*\{[0-9]+ -' paper.bib           # Space before hyphen (WRONG)
+
+# ── DOI Format ──
+rg 'doi\s*=\s*\{http' paper.bib     # DOI stored as URL (WRONG — should be numbers only)
+rg 'doi\s*=\s*\{10\.' paper.bib     # Correct DOI format (starts with 10.)
+rg 'url.*doi\.org' paper.bib        # DOI in url field (redundant if doi field exists)
+
+# ── Month Format ──
+rg 'month\s*=\s*\{' paper.bib       # Month in braces (WRONG — should be bare macro: month = jun)
+rg 'month\s*=\s*"' paper.bib        # Month in quotes (WRONG)
+rg 'month\s*=\s*[a-z]' paper.bib    # Correct: bare month macro
+
+# ── Cross-Reference Check ──
+rg '\\cite\{' paper.tex             # List all citations in .tex
+rg '(?<!~)\\cite\{' paper.tex       # Citations missing non-breaking space ~
+rg '\\cite\{.*,.*,.*\}' paper.tex   # Multiple citations in one \cite (check order)
 ```
 
 ---
@@ -298,3 +347,16 @@ Based on analysis of actual submissions, these are the most frequently occurring
 40. **Conclusion introduces new claims** — information that doesn't appear earlier in the paper
 41. **Conclusion overclaims** — "transforms the field" without extraordinary evidence
 42. **Conclusion no specific future work** — "explore future directions" without concrete plans
+43. **BibTeX title not protected** — acronyms/method names like GPU, BERT, CICIDS lose capitalization
+44. **BibTeX double-braced title** — `{{Entire Title}}` prevents all case conversion by style
+45. **Author initials missing spaces** — `J.D. Owens` instead of `J. D. Owens` in .bib
+46. **Journal names mixed style** — some abbreviated, some full in same bibliography
+47. **IEEE journal not abbreviated** — full name used when IEEE requires ISO 4 abbreviation
+48. **Page range single hyphen** — `pages = {35-49}` should be `pages = {35--49}`
+49. **DOI stored as full URL** — `doi = {https://doi.org/10.xxxx}` should be `doi = {10.xxxx}`
+50. **Month in braces/quotes** — `month = {june}` should be `month = jun` (bare BibTeX macro)
+51. **Conference paper as @article** — Google Scholar export error, should be `@inproceedings`
+52. **Digital library export unchecked** — IEEE/ACM/Google Scholar BibTeX used verbatim without manual verification
+53. **Conference name (booktitle) scrambled** — raw export like `{CVPR, 2023 IEEE}` instead of proper formatting
+54. **DOI and URL redundant** — both `doi` and `url` fields pointing to same DOI
+55. **Special characters not escaped** — `Müller` instead of `M{\"u}ller` in author names
