@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Figure Styling"
+  short_description: "Style academic figures and tables for publication quality"
+  default_prompt: "Use $paper-figure-styling to audit and improve figures, tables, color mapping, and float layout in @paper.tex for the target venue."
