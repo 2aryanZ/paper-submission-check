@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper English Polishing"
+  short_description: "Translate and polish academic paper English with diffs"
+  default_prompt: "Use $paper-english-polishing to translate and polish @paper.tex section by section with sentence-level diffs and LaTeX-safe output."

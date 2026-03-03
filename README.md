@@ -8,17 +8,18 @@
 
 Beginner-friendly paper workflow skills for AI coding assistants.
 
-This repo provides two skills:
+This repo provides three skills:
 
 | Skill | Best Use Time | What It Does |
 |---|---|---|
+| `paper-english-polishing` | Draft translation and language refinement | Translates Chinese-to-English and polishes academic writing paragraph by paragraph with structured diffs and LaTeX-safe output. |
 | `paper-multi-round-review` | During research iteration | Simulates multi-round peer review (4 reviewers + meta-review + rebuttal/revision guidance). |
 | `paper-submission-check` | Final stage before submission | Runs pre-submission quality checks (AI-style cleanup, language, references, LaTeX quality, structure). |
 
 ## 5-Minute Quick Start (Recommended)
 
 1. Clone this repo locally.
-2. Copy one or both skill folders into your assistant's skill directory.
+2. Copy one or more skill folders into your assistant's skill directory.
 3. Restart your IDE/agent session.
 4. Run one explicit invocation prompt (copy-paste from examples below).
 5. If output follows the skill workflow, it is enabled.
@@ -29,7 +30,8 @@ This repo provides two skills:
 cd ~
 git clone git@github.com:zhousodo/paper-submission-check.git paper-skills
 
-# Install one or both
+# Install one or more
+cp -r ~/paper-skills/skills/paper-english-polishing ~/.cursor/skills/
 cp -r ~/paper-skills/skills/paper-submission-check ~/.cursor/skills/
 cp -r ~/paper-skills/skills/paper-multi-round-review ~/.cursor/skills/
 ```
@@ -40,7 +42,8 @@ cp -r ~/paper-skills/skills/paper-multi-round-review ~/.cursor/skills/
 cd $env:USERPROFILE
 git clone git@github.com:zhousodo/paper-submission-check.git paper-skills
 
-# Install one or both
+# Install one or more
+Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-english-polishing" "$env:USERPROFILE\.cursor\skills\"
 Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-submission-check" "$env:USERPROFILE\.cursor\skills\"
 Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-multi-round-review" "$env:USERPROFILE\.cursor\skills\"
 ```
@@ -75,6 +78,10 @@ Use $paper-multi-round-review to run Round-1 review on @paper.tex and provide a 
 Use $paper-submission-check to check @paper.tex and @refs.bib before submission.
 ```
 
+```text
+Use $paper-english-polishing to polish @paper.tex section by section and return sentence-level diffs.
+```
+
 ### Natural-language invocation
 
 ```text
@@ -85,26 +92,33 @@ Please simulate 4 reviewers for @paper.tex and provide an AC-style meta-review.
 Please run a final pre-submission quality check on @paper.tex and @refs.bib.
 ```
 
+```text
+Please translate and polish the English of @paper.tex from Chinese draft, with LaTeX-safe output.
+```
+
 ### End-to-end workflow example
 
 ```text
-Step 1: Use $paper-multi-round-review on @paper.tex.
-Step 2: List critical and major fixes only.
-Step 3: After revision, use $paper-submission-check on @paper.tex and @refs.bib.
-Step 4: Return a final must-fix checklist before submission.
+Step 1: Use $paper-english-polishing on @paper.tex.
+Step 2: Use $paper-multi-round-review on the polished draft.
+Step 3: List critical and major fixes only, then revise.
+Step 4: Use $paper-submission-check on @paper.tex and @refs.bib.
+Step 5: Return a final must-fix checklist before submission.
 ```
 
 ## Which Skill Should I Use?
 
 Use this rule:
 
+- Need Chinese-to-English translation / language polishing -> `paper-english-polishing`
 - Need technical depth / novelty / experiment critique -> `paper-multi-round-review`
 - Need language/style/format/reference cleanup -> `paper-submission-check`
-- Want strongest pipeline -> use both, in this order:
-  `paper-multi-round-review` -> revise -> `paper-submission-check`
+- Want strongest pipeline -> use all three, in this order:
+  `paper-english-polishing` -> `paper-multi-round-review` -> revise -> `paper-submission-check`
 
 ## What Success Looks Like
 
+- `paper-english-polishing`: You should see paragraph-level rewrites with sentence-level diffs and clear reasons.
 - `paper-multi-round-review`: You should see reviewer-by-reviewer strengths, weaknesses, scores, and a meta-review with priority fixes.
 - `paper-submission-check`: You should see phase-based issues (language, AI style, citations, BibTeX, formatting) with fix recommendations.
 
@@ -123,7 +137,7 @@ Use this rule:
 
 ### Wrong skill triggered
 
-- Always call by name: `$paper-submission-check` or `$paper-multi-round-review`.
+- Always call by name: `$paper-english-polishing`, `$paper-submission-check`, or `$paper-multi-round-review`.
 
 ### Output is too generic
 
@@ -135,6 +149,13 @@ Use this rule:
 ```text
 paper-submission-check/
 ├── skills/
+│   ├── paper-english-polishing/
+│   │   ├── SKILL.md
+│   │   ├── chinglish-patterns.md
+│   │   ├── section-conventions.md
+│   │   ├── polishing-examples.md
+│   │   └── agents/
+│   │       └── openai.yaml
 │   ├── paper-submission-check/
 │   │   ├── SKILL.md
 │   │   ├── ai-phrases.md
@@ -160,17 +181,18 @@ paper-submission-check/
 
 面向新手的论文工作流 Skill 仓库，适用于主流 AI 编程助手。
 
-本仓库提供两个 Skill：
+本仓库提供三个 Skill：
 
 | Skill | 适用阶段 | 作用 |
 |---|---|---|
+| `paper-english-polishing` | 初稿翻译与语言打磨 | 对中英混合或中文初稿做学术英语翻译与润色，按段输出改写与差异说明。 |
 | `paper-multi-round-review` | 研究迭代阶段 | 多轮同行评审模拟（4 位评审 + Meta-Review + rebuttal/revision 建议）。 |
 | `paper-submission-check` | 投稿前最后阶段 | 投稿前终检（AI 痕迹、语言、参考文献、LaTeX 质量、结构完整性）。 |
 
 ## 5 分钟快速上手（推荐）
 
 1. 克隆仓库。
-2. 将一个或两个 Skill 目录复制到你的平台技能目录。
+2. 将一个或多个 Skill 目录复制到你的平台技能目录。
 3. 重启 IDE 或 agent 会话。
 4. 执行一次显式调用（下面有可复制示例）。
 5. 如果输出进入对应流程，说明启用成功。
@@ -181,7 +203,8 @@ paper-submission-check/
 cd ~
 git clone git@github.com:zhousodo/paper-submission-check.git paper-skills
 
-# 安装一个或两个
+# 安装一个或多个
+cp -r ~/paper-skills/skills/paper-english-polishing ~/.cursor/skills/
 cp -r ~/paper-skills/skills/paper-submission-check ~/.cursor/skills/
 cp -r ~/paper-skills/skills/paper-multi-round-review ~/.cursor/skills/
 ```
@@ -192,7 +215,8 @@ cp -r ~/paper-skills/skills/paper-multi-round-review ~/.cursor/skills/
 cd $env:USERPROFILE
 git clone git@github.com:zhousodo/paper-submission-check.git paper-skills
 
-# 安装一个或两个
+# 安装一个或多个
+Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-english-polishing" "$env:USERPROFILE\.cursor\skills\"
 Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-submission-check" "$env:USERPROFILE\.cursor\skills\"
 Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-multi-round-review" "$env:USERPROFILE\.cursor\skills\"
 ```
@@ -227,6 +251,10 @@ Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-multi-roun
 请使用 $paper-submission-check 检查 @paper.tex 和 @refs.bib，按投稿前清单输出问题。
 ```
 
+```text
+请使用 $paper-english-polishing 对 @paper.tex 逐段润色，并输出句级 diff。
+```
+
 ### 自然语言调用
 
 ```text
@@ -237,25 +265,32 @@ Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-multi-roun
 请对 @paper.tex 和 @refs.bib 执行投稿前最终质检。
 ```
 
+```text
+请把 @paper.tex 的中文初稿翻译并润色成学术英语，输出可直接粘贴到 LaTeX 的版本。
+```
+
 ### 端到端组合示例
 
 ```text
-第 1 步：用 $paper-multi-round-review 评审 @paper.tex。
-第 2 步：只列出 Critical 和 Major 问题并修稿。
-第 3 步：用 $paper-submission-check 复检 @paper.tex 和 @refs.bib。
-第 4 步：输出最终投稿前 must-fix 清单。
+第 1 步：用 $paper-english-polishing 润色 @paper.tex。
+第 2 步：用 $paper-multi-round-review 评审润色后的稿件。
+第 3 步：只列出 Critical 和 Major 问题并修稿。
+第 4 步：用 $paper-submission-check 复检 @paper.tex 和 @refs.bib。
+第 5 步：输出最终投稿前 must-fix 清单。
 ```
 
 ## 如何选择 Skill
 
 简单规则：
 
+- 需要中译英或英文润色 -> `paper-english-polishing`
 - 关注技术深度、创新性、实验可信度 -> `paper-multi-round-review`
 - 关注语言、格式、引用、AI 痕迹清理 -> `paper-submission-check`
-- 最稳妥流程 -> 先 `paper-multi-round-review`，修稿后再 `paper-submission-check`
+- 最稳妥流程 -> 先 `paper-english-polishing`，再 `paper-multi-round-review`，修稿后 `paper-submission-check`
 
 ## 启用成功的判断标准
 
+- `paper-english-polishing`：输出应包含分段改写、句级差异和修改理由。
 - `paper-multi-round-review`：输出应包含按 reviewer 分组的优缺点、评分和 Meta-Review 优先级。
 - `paper-submission-check`：输出应包含分阶段问题清单（语言、AI 风格、引用、BibTeX、格式）及修复建议。
 
@@ -274,7 +309,7 @@ Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-multi-roun
 
 ### 触发了错误 Skill
 
-- 直接指定：`$paper-submission-check` 或 `$paper-multi-round-review`。
+- 直接指定：`$paper-english-polishing`、`$paper-submission-check` 或 `$paper-multi-round-review`。
 
 ### 输出太空泛
 
@@ -286,6 +321,7 @@ Copy-Item -Recurse -Force "$env:USERPROFILE\paper-skills\skills\paper-multi-roun
 ```text
 paper-submission-check/
 ├── skills/
+│   ├── paper-english-polishing/
 │   ├── paper-submission-check/
 │   └── paper-multi-round-review/
 ├── README.md
