@@ -22,8 +22,7 @@ Before any rewrite, lock these invariants:
 
 ```
 Polishing Progress:
-- [ ] Phase 0: Pre-Analysis (scope lock, language, venue, structure, terminology, bilingual setup)
-- [ ] Phase 0b: Bilingual Scaffolding (if Chinese source: inject preamble, remove global CJK safely)
+- [ ] Phase 0: Pre-Analysis (scope lock, language, venue, terminology, bilingual scaffolding)
 - [ ] Phase 1: Title & Abstract
 - [ ] Phase 2: Introduction
 - [ ] Phase 3: Related Work
@@ -85,23 +84,23 @@ Terminology Ledger (update as polishing proceeds):
 
 When source is Chinese, inject bilingual scaffolding into the LaTeX preamble so the PDF shows both languages during review, and hides Chinese with a single flag change before submission.
 
-**Step 1: Add to preamble** (after existing `\usepackage` block):
+**Step 1: Add to preamble** (after existing `\usepackage` block). Before pasting, check which packages the paper already loads; skip any `\usepackage` line that would duplicate an existing import.
 
 ```latex
 % === Bilingual comparison mode ===
 % Set \showchinesefalse before submission to hide all Chinese text
-\usepackage{xcolor}
-\usepackage{iftex}
-\ifPDFTeX
-  \usepackage{CJKutf8}
-  \newcommand{\zhtext}[1]{\begin{CJK*}{UTF8}{gbsn}#1\end{CJK*}}
-\else
-  % XeLaTeX/LuaLaTeX: assume CJK-capable engine/font setup already exists
-  \newcommand{\zhtext}[1]{#1}
-\fi
+% NOTE: only add the \usepackage lines below if NOT already loaded.
+%       Duplicate \usepackage will cause a LaTeX compile error.
+\usepackage{xcolor}     % skip if already loaded
+\usepackage{CJKutf8}    % skip if already loaded (pdfLaTeX CJK support)
 
 \newif\ifshowchinese
 \showchinesetrue
+
+% \zhtext: wrap Chinese text in a CJK environment.
+% If your paper uses XeLaTeX/LuaLaTeX with fontspec, replace the
+% definition with \newcommand{\zhtext}[1]{#1} (engine handles CJK natively).
+\newcommand{\zhtext}[1]{\begin{CJK*}{UTF8}{gbsn}#1\end{CJK*}}
 
 \newcommand{\zhpara}[1]{%
   \ifshowchinese
@@ -112,6 +111,10 @@ When source is Chinese, inject bilingual scaffolding into the LaTeX preamble so 
   \ifshowchinese
     {\small\color{blue!40!black}\zhtext{#1}}%
   \fi
+}
+% For inline Chinese within a sentence (rare):
+\newcommand{\zhinline}[1]{%
+  \ifshowchinese{\footnotesize\color{blue!40!black}\zhtext{[#1]}}\fi
 }
 ```
 
@@ -125,7 +128,40 @@ Polished English paragraph here, with all formulas and citations.
 
 **Design rationale**: Paragraph-level alignment, NOT sentence-level. Good translation restructures sentence order and count; forcing 1:1 sentence alignment produces Chinglish.
 
-**Scope of `\zhpara{}`**: Use for body paragraphs. Section titles (`\section{}`) switch directly to English without bilingual pairing. For figure/table captions, use `\protect\zhcaption{}` inside `\caption{}`.
+**Scope of `\zhpara{}`**: Use for plain-text body paragraphs. Section titles (`\section{}`) switch directly to English without bilingual pairing. For figure/table captions, use `\protect\zhcaption{}` inside `\caption{}`.
+
+**LaTeX limitation**: `\zhpara{}` is a macro argument; it CANNOT contain `\begin{...}...\end{...}` environments (itemize, equation, table, etc.). For structured blocks, place `\zhpara{}` around each plain-text fragment separately:
+
+```latex
+% WRONG — will not compile:
+\zhpara{本文贡献如下：\begin{itemize}\item 第一条...\end{itemize}}
+
+% CORRECT — split around the environment:
+\zhpara{本文的主要贡献如下：}
+The main contributions are as follows:
+\begin{itemize}
+\item \zhpara{三视图反事实训练范式。现有方法...}
+\textbf{Three-view counterfactual training.} Existing methods...
+\item \zhpara{梯度解耦及理论保证。...}
+\textbf{Gradient decoupling with theoretical guarantees.} ...
+\end{itemize}
+```
+
+Similarly, for paragraphs containing display equations, split at the equation boundary:
+```latex
+\zhpara{总损失由检测损失与归因质量损失加权组合：}
+The total loss combines detection and attribution:
+\begin{equation}
+\mathcal{L} = \mathcal{L}_{\text{det}} + \lambda_{\text{attr}}\,\mathcal{L}_{\text{attr}}
+\end{equation}
+\zhpara{以下分别描述两项损失的构成。}
+The following subsections detail each component.
+```
+
+**`\paragraph{}` headings**: Translate directly without bilingual pairing (like `\section{}`). Use `\zhinline{}` if the author wants to see the original Chinese inline:
+```latex
+\paragraph{Summary and positioning.} \zhinline{小结与定位。}
+```
 
 **Compile sanity check**: After adding bilingual scaffolding, compile once to verify no caption/macro errors before batch polishing.
 

@@ -77,7 +77,7 @@ Detailed per-section writing patterns for top-tier venue papers. Reference from 
 |------|----------|
 | Algorithmic | "We propose [NAME], a [SHORT DESCRIPTION] that [KEY MECHANISM]. Unlike [COMPARISON], [NAME] [SPECIFIC DIFFERENCE]." |
 | Theoretical | "We provide theoretical guarantees showing that [PROPERTY], formalized as [WHAT] (Proposition X)." |
-| Empirical | "We conduct experiments on [N] datasets and report [SPECIFIC METRIC IMPROVEMENTS] over [N] baselines." |
+| Empirical | "We evaluate [NAME] on [N] datasets against [N] baselines, reporting [SPECIFIC METRIC IMPROVEMENTS]." |
 
 ---
 
