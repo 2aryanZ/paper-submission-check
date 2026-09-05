@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Submission Check"
+  short_description: "Run pre-submission quality checks on academic LaTeX papers"
+  default_prompt: "Use $paper-submission-check to perform a full pre-submission audit of @paper.tex covering language, references, structure, and LaTeX compliance."
