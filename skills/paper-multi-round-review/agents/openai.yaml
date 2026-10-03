@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Multi-Round Review"
+  short_description: "Simulate multi-reviewer academic peer review with revision cycles"
+  default_prompt: "Use $paper-multi-round-review to run a multi-round peer review of @paper.tex with independent reviewer panels, meta-review synthesis, and revision tracking."
